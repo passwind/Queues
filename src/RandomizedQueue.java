@@ -115,7 +115,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // unit testing
     public static void main(String[] args)   
     {
-        RandomizedQueue rq = new RandomizedQueue<String>();
+        RandomizedQueue<String> rq = new RandomizedQueue<String>();
         System.out.println("initial queue is empty: " + rq.isEmpty());
         System.out.println("size of initial queue is 0: " + rq.size());
         

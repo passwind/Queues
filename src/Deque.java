@@ -143,7 +143,7 @@ public class Deque<Item> implements Iterable<Item>
     
     // unit testing
     public static void main(String[] args) {
-        Deque dq = new Deque<String>();
+        Deque<String> dq = new Deque<String>();
         
         try 
         {
