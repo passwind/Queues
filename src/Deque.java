@@ -1,24 +1,44 @@
+/******************************************************************************
+ *  Author: Zhu Yu
+ *  Date: 2016-12-09
+ *  Purpose:      A double-ended queue or deque (pronounced "deck") is 
+ *                  a generalization of a stack and a queue that supports 
+ *                  adding and removing items from either the front 
+ *                  or the back of the data structure. 
+ *  Compilation:  javac Deque.java
+ *  Execution:    java Deque
+ *  Dependencies: None
+ *
+ ******************************************************************************/
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import edu.princeton.cs.algs4.StdOut;
 
 
 public class Deque<Item> implements Iterable<Item> 
 {
+    // first node
     private Node first = null;
+    // last node
     private Node last = null;
+    // size of items
     private int n = 0;
     
-    private class Node
-    {
-        Item item;
-        Node prior;
-        Node next;
-    }
-
     // construct an empty deque
     public Deque() {
     }
     
+    // node structure
+    private class Node
+    {
+        private Item item;
+        private Node prior;
+        private Node next;
+    }
+    
+    // create node with data
     private Node makeNode(Item item)
     {
         if (item == null) 
@@ -60,6 +80,7 @@ public class Deque<Item> implements Iterable<Item>
             Node oldFirst = first;
             first = node;
             first.next = oldFirst;
+            oldFirst.prior = first;
         }
         
         n++;
@@ -97,6 +118,8 @@ public class Deque<Item> implements Iterable<Item>
         
         n--;
         
+        if (n == 0) last = null;
+        
         return oldFirst.item;
     }
     
@@ -112,6 +135,8 @@ public class Deque<Item> implements Iterable<Item>
             last.next = null;
         
         n--;
+        
+        if (n == 0) first = null;
         
         return oldLast.item;
     }
@@ -233,6 +258,16 @@ public class Deque<Item> implements Iterable<Item>
         System.out.println("after remove 2 size should be 0, real is " + dq.size());
         
         System.out.println("deque should be empty. - " + dq.isEmpty());
+        
+        dq.addFirst("test");
+        StdOut.println("size : " + dq.size());
+        dq.removeLast();
+        StdOut.println("size : " + dq.size());
+        
+        dq.addFirst("haha");
+        dq.addFirst("hehe");
+        String t = dq.removeLast();
+        StdOut.println("should be haha: " + t);
     }
 
 }

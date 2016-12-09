@@ -1,3 +1,15 @@
+/******************************************************************************
+ *  Author: Zhu Yu
+ *  Date: 2016-12-09
+ *  Purpose:      A randomized queue is similar to a stack or queue, 
+ *                  except that the item removed is chosen uniformly 
+ *                  at random from items in the data structure. 
+ *  Compilation:  javac -Xlint:unchecked RandomizedQueue.java
+ *  Execution:    java RandomizedQueue
+ *  Dependencies: None
+ *
+ ******************************************************************************/
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -5,19 +17,24 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
+    // resized-array to save data
     private Item[] items;
-    private int N = 0;
+    // space of data storage
+    private int n = 0;
     
     // construct an empty randomized queue
+    // @SuppressWarnings({ "unchecked" })
     public RandomizedQueue()     
     {
         items = (Item[]) new Object[1];
     }
     
+    // change resized-array to increase or decrease space of storage
     private void resize(int capacity)
     {
+        // @SuppressWarnings("unchecked")
         Item[] copy = (Item[]) new Object[capacity];
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < n; i++)
             copy[i] = items[i];
             
         items = copy;
@@ -26,41 +43,42 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // is the queue empty?
     public boolean isEmpty()  
     {
-        return N == 0;
+        return n == 0;
     }
     
     // return the number of items on the queue
     public int size() 
     {
-        return N;
+        return n;
     }
     
     // add the item
     public void enqueue(Item item)   
     {
         if (item == null) throw new NullPointerException();
-        if (N == items.length) resize(2 * items.length);
-        items[N++] = item;
+        if (n == items.length) resize(2 * items.length);
+        items[n++] = item;
     }
     
     // remove and return a random item
     public Item dequeue()    
     {
-        if (N == 0) throw new NoSuchElementException();
-        int idx = StdRandom.uniform(0, N);
+        if (n == 0) throw new NoSuchElementException();
+        int idx = StdRandom.uniform(0, n);
         Item item = items[idx];
-        for (int i = idx; i < N-1; i++)
+        for (int i = idx; i < n-1; i++)
             items[i] = items[i+1];
-        if (N>0 && N == items.length/4) resize(items.length/2);
-        N--;
+        items[n-1] = null;  // avoid loitering
+        if (n > 0 && n == items.length/4) resize(items.length/2);
+        n--;
         return item;
     }
     
     // return (but do not remove) a random item
     public Item sample()       
     {
-        if (N == 0) throw new NoSuchElementException();
-        int idx = StdRandom.uniform(0, N);
+        if (n == 0) throw new NoSuchElementException();
+        int idx = StdRandom.uniform(0, n);
         Item item = items[idx];
         return item;
     }
@@ -71,11 +89,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return new QueueIterator();
     }
     
+    // iterator class definition
     private class QueueIterator implements Iterator<Item>
     {
         private int current = -1;
         private Item[] iteratorItems;
         
+        // @SuppressWarnings("unchecked")
         public QueueIterator()
         {
             iteratorItems = (Item[]) new Object[items.length];
@@ -106,7 +126,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 throw new NoSuchElementException();
             }
             Item item = iteratorItems[current];
-            current ++;
+            current++;
             if (current == iteratorItems.length) current = -1;
             return item;
         }
@@ -189,17 +209,17 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         
         StdOut.println("test dequeue");
         
-        String s1 = (String) rq.dequeue();
+        String s1 = rq.dequeue();
         StdOut.println(s1);
-        String s2 = (String) rq.dequeue();
+        String s2 = rq.dequeue();
         StdOut.println(s2);
         
         System.out.println("after remove 2 queue is empty: " + rq.isEmpty());
         System.out.println("size of after remove 2 is 0: " + rq.size());
         
-        String s3 = (String) rq.dequeue();
+        String s3 = rq.dequeue();
         StdOut.println(s3);
-        String s4 = (String) rq.dequeue();
+        String s4 = rq.dequeue();
         StdOut.println(s4);
         
         System.out.println("after remove 2 queue is empty: " + rq.isEmpty());

@@ -1,8 +1,23 @@
+/******************************************************************************
+ *  Author: Zhu Yu
+ *  Date: 2016-12-09
+ *  Purpose:      Subset client. Write a client program Subset.java that 
+ *                  takes a command-line integer k; reads in a sequence 
+ *                  of N strings from standard input using StdIn.readString(); 
+ *                  and prints out exactly k of them, uniformly at random. 
+ *                  Each item from the sequence can be printed out at most once. 
+ *                  You may assume that 0 ≤ k ≤ n, where n is the number of 
+ *                  string on standard input. 
+ *  Compilation:  javac Subset.java
+ *  Execution:    echo A B C D E F G H I | java Subset 3 
+ *  Dependencies: RandomizedQueue.java
+ *
+ ******************************************************************************/
+
 import java.util.NoSuchElementException;
 
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
-
 
 public class Subset
 {
@@ -18,10 +33,6 @@ public class Subset
                 rq.enqueue(s);
             }
             catch (NoSuchElementException e)
-            {
-                break;
-            }
-            catch (Exception e)
             {
                 break;
             }
