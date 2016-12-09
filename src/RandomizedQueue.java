@@ -98,11 +98,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         // @SuppressWarnings("unchecked")
         public QueueIterator()
         {
-            iteratorItems = (Item[]) new Object[items.length];
-            int[] indexes = new int[items.length];
-            for (int i = 0; i < items.length; i++) indexes[i] = i;
+            iteratorItems = (Item[]) new Object[n];
+            int[] indexes = new int[n];
+            for (int i = 0; i < n; i++) indexes[i] = i;
             
-            for (int i = items.length; i > 0; i--)
+            for (int i = n; i > 0; i--)
             {
                 int idx = StdRandom.uniform(0, i);
                 int itemIdx = indexes[idx];
