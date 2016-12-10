@@ -31,9 +31,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     // node structure
     private class Node
     {
-        Item item;
-        Node prior;
-        Node next;
+        private Item item;
+        private Node prior;
+        private Node next;
     }
     
     // is the queue empty?
@@ -149,9 +149,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 int idx = StdRandom.uniform(0, i);
                 int itemIdx = indexes[idx];
                 for (int j = idx; j < i-1; j++) indexes[j] = indexes[j+1];
-                Node current = fetchNodeByIndex(itemIdx);
+                Node node = fetchNodeByIndex(itemIdx);
                 
-                iteratorItems[i-1] = current.item;
+                iteratorItems[i-1] = node.item;
             }
             
             if (iteratorItems.length > 0) current = 0;
