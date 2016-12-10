@@ -17,27 +17,23 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
-    // resized-array to save data
-    private Item[] items;
+    // linked-list: first node & last node
+    private Node first = null;
+    private Node last = null;
     // space of data storage
     private int n = 0;
     
     // construct an empty randomized queue
-    // @SuppressWarnings({ "unchecked" })
     public RandomizedQueue()     
     {
-        items = (Item[]) new Object[1];
     }
     
-    // change resized-array to increase or decrease space of storage
-    private void resize(int capacity)
+    // node structure
+    private class Node
     {
-        // @SuppressWarnings("unchecked")
-        Item[] copy = (Item[]) new Object[capacity];
-        for (int i = 0; i < n; i++)
-            copy[i] = items[i];
-            
-        items = copy;
+        Item item;
+        Node prior;
+        Node next;
     }
     
     // is the queue empty?
@@ -52,12 +48,53 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         return n;
     }
     
+    // create node with data
+    private Node makeNode(Item item)
+    {
+        if (item == null) 
+        {
+            throw new NullPointerException();
+        }
+        
+        Node node = new Node();
+        node.item = item;
+        node.prior = null;
+        node.next = null;
+        
+        return node;
+    }
+    
     // add the item
     public void enqueue(Item item)   
     {
-        if (item == null) throw new NullPointerException();
-        if (n == items.length) resize(2 * items.length);
-        items[n++] = item;
+        Node node = makeNode(item);
+        
+        if (last == null) 
+        {
+            first = node;
+            last = node;
+        }
+        else
+        {
+            last.next = node;
+            node.prior = last;
+            last = node;
+        }
+        
+        n++;
+    }
+    
+    private Node fetchNodeByIndex(int idx)
+    {
+        int i = 0;
+        Node current = first;
+        while (i < idx && current != null)
+        {
+            current = current.next;
+            i++;
+        }
+        
+        return current;
     }
     
     // remove and return a random item
@@ -65,13 +102,19 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     {
         if (n == 0) throw new NoSuchElementException();
         int idx = StdRandom.uniform(0, n);
-        Item item = items[idx];
-        for (int i = idx; i < n-1; i++)
-            items[i] = items[i+1];
-        items[n-1] = null;  // avoid loitering
+        Node current = fetchNodeByIndex(idx);
+        
+        if (current == first)
+        {
+            first = first.next;
+        }
+        else
+        {
+            if (current.prior != null) current.prior.next = current.next;
+            if (current.next != null) current.next.prior = current.prior;
+        }
         n--;
-        if (n > 0 && n == items.length/4) resize(items.length/2);
-        return item;
+        return current.item;
     }
     
     // return (but do not remove) a random item
@@ -79,8 +122,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     {
         if (n == 0) throw new NoSuchElementException();
         int idx = StdRandom.uniform(0, n);
-        Item item = items[idx];
-        return item;
+        Node current = fetchNodeByIndex(idx);
+        return current.item;
     }
     
     // return an independent iterator over items in random order
@@ -95,7 +138,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         private int current = -1;
         private Item[] iteratorItems;
         
-        // @SuppressWarnings("unchecked")
         public QueueIterator()
         {
             iteratorItems = (Item[]) new Object[n];
@@ -107,8 +149,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
                 int idx = StdRandom.uniform(0, i);
                 int itemIdx = indexes[idx];
                 for (int j = idx; j < i-1; j++) indexes[j] = indexes[j+1];
+                Node current = fetchNodeByIndex(itemIdx);
                 
-                iteratorItems[i-1] = items[itemIdx];
+                iteratorItems[i-1] = current.item;
             }
             
             if (iteratorItems.length > 0) current = 0;
